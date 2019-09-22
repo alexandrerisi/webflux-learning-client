@@ -52,4 +52,16 @@ public class ItemClientController {
         return webClient.delete().uri("/items/{id}", id)
                 .retrieve().bodyToMono(Void.class).log();
     }
+
+    @GetMapping("/client/error")
+    public Flux<ItemClient> error() {
+        return webClient.get().uri("/functional/exception")
+                .retrieve().onStatus(HttpStatus::is5xxServerError, clientResponse -> {
+                    var error = clientResponse.bodyToMono(String.class);
+                    return error.flatMap(s -> {
+                        System.out.println(s);
+                        throw new RuntimeException("Exception on the server");
+                    });
+                }).bodyToFlux(ItemClient.class);
+    }
 }
