@@ -1,6 +1,9 @@
 package com.risi.learningreactiveclient.webfluxlearningclient.controller;
 
+import com.risi.learningreactiveclient.webfluxlearningclient.cloud.ReactiveProxy;
 import com.risi.learningreactiveclient.webfluxlearningclient.domain.ItemClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +14,21 @@ import reactor.core.publisher.Mono;
 @RestController
 public class ItemClientController {
 
-    private WebClient webClient = WebClient.create("http://localhost:8080");
+    @Autowired
+    private ReactiveProxy proxy;
+    private WebClient webClient = WebClient.create("http://localhost:8080/webflux-server/");
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     @GetMapping("/client/retrieve")
     public Flux<ItemClient> getItemsUsingRetrieve() {
-        return webClient.get().uri("/items").retrieve().bodyToFlux(ItemClient.class).log();
+        //return webClient.get().uri("/items").retrieve().bodyToFlux(ItemClient.class);
+        return proxy.retrieveItems();
+    }
+
+    @GetMapping("/client/test")
+    public Flux<String> test() {
+        return proxy.test();
     }
 
     @GetMapping("/client/exchange")
@@ -63,5 +76,13 @@ public class ItemClientController {
                         throw new RuntimeException("Exception on the server");
                     });
                 }).bodyToFlux(ItemClient.class);
+    }
+
+    @GetMapping("/client/testLoadBalancing")
+    public Mono<String> testLoadBalancing() {
+        return webClientBuilder.build()
+                .get().uri("http://webflux-server/items/serverPort/")
+                .retrieve()
+                .bodyToMono(String.class);
     }
 }
