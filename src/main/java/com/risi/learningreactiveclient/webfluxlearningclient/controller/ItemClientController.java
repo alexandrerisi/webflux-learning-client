@@ -3,6 +3,7 @@ package com.risi.learningreactiveclient.webfluxlearningclient.controller;
 import com.risi.learningreactiveclient.webfluxlearningclient.cloud.ReactiveProxy;
 import com.risi.learningreactiveclient.webfluxlearningclient.domain.ItemClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,8 +16,10 @@ import reactor.core.publisher.Mono;
 public class ItemClientController {
 
     @Autowired
+    DiscoveryClient client;
+    @Autowired
     private ReactiveProxy proxy;
-    private WebClient webClient = WebClient.create("http://localhost:8080/webflux-server/");
+    private WebClient webClient = WebClient.create("http://webflux-server/");
     @Autowired
     private WebClient.Builder webClientBuilder;
 
