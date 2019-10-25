@@ -1,6 +1,6 @@
 package com.risi.learningreactiveclient.webfluxlearningclient;
 
-//import brave.sampler.Sampler;
+import brave.sampler.Sampler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -18,10 +18,10 @@ public class WebfluxLearningClientApplication {
         SpringApplication.run(WebfluxLearningClientApplication.class, args);
     }
 
-    //@Bean
-    //public Sampler sampler() {
-    //    return Sampler.create(1);
-    //}
+    @Bean
+    public Sampler sampler() {
+        return Sampler.create(1);
+    }
 
     @Bean
     @LoadBalanced
