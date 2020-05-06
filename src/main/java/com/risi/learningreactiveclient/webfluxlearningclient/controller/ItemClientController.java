@@ -17,8 +17,8 @@ public class ItemClientController {
 
     @Autowired
     DiscoveryClient client;
-    @Autowired
-    private ReactiveProxy proxy;
+    //@Autowired
+    //private ReactiveProxy proxy;
     private WebClient webClient = WebClient.create("http://webflux-server/");
     @Autowired
     private WebClient.Builder webClientBuilder;
@@ -26,13 +26,16 @@ public class ItemClientController {
     @GetMapping("/client/retrieve")
     public Flux<ItemClient> getItemsUsingRetrieve() {
         //return webClient.get().uri("/items").retrieve().bodyToFlux(ItemClient.class);
-        return proxy.retrieveItems();
+        return webClientBuilder.build().get().uri("http://webflux-server/items")
+                .retrieve()
+                .bodyToFlux(ItemClient.class);
+        //return proxy.retrieveItems();
     }
 
-    @GetMapping("/client/test")
+    /*@GetMapping("/client/test")
     public Flux<String> test() {
         return proxy.test();
-    }
+    }*/
 
     @GetMapping("/client/exchange")
     public Flux<ItemClient> getItemsUsingExchange() {
